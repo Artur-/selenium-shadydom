@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+
+<head>
+<script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+</head>
+
+<body>
+	<script>
+	
+    class MyElement extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({mode: 'open'});
+        var outer = document.createElement("div");
+        outer.id = "outer";
+        var inner = document.createElement("span");
+        inner.id = "inner";
+        inner.innerText = "Hello";
+        outer.appendChild(inner);
+        this.shadowRoot.appendChild(outer);
+      }
+    }
+    customElements.define('my-element', MyElement);
+
+  </script>
+
+	<my-element></my-element>
+</body>
+</html>

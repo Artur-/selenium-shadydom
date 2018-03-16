@@ -1,0 +1,85 @@
+<!doctype html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>vaadin-dialog tests</title>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../../iron-test-helpers/iron-test-helpers.html">
+  <link rel="import" href="../vaadin-dialog.html">
+</head>
+
+<body>
+  <test-fixture id="default">
+    <template>
+      <vaadin-dialog opened>
+        <template>
+          <div>Simple dialog</div>
+        </template>
+      </vaadin-dialog>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="notemplate">
+    <template>
+      <vaadin-dialog>
+      </vaadin-dialog>
+    </template>
+  </test-fixture>
+
+  <script>
+    describe('vaadin-dialog', () => {
+      var dialog, backdrop, overlay;
+
+      beforeEach(() => {
+        dialog = fixture('default');
+        overlay = dialog.$.overlay;
+        backdrop = overlay.$.backdrop;
+      });
+
+      it('overlay should have the `dialog` role', () => {
+        expect(overlay.getAttribute('role')).to.be.eql('dialog');
+      });
+
+      it('overlay should close on dettach', () => {
+        dialog.parentNode.removeChild(dialog);
+        expect(dialog.opened).to.eql(false);
+      });
+
+      describe('no-close-on-esc', () => {
+        it('should close itself on ESC press by default', () => {
+          MockInteractions.pressAndReleaseKeyOn(document.body, 27, [], 'Escape');
+          expect(dialog.opened).to.eql(false);
+        });
+
+        it('should not close itself on ESC press when no-close-on-esc is true', () => {
+          dialog.noCloseOnEsc = true;
+          MockInteractions.pressAndReleaseKeyOn(document.body, 27, [], 'Escape');
+          expect(dialog.opened).to.eql(true);
+        });
+      });
+
+      describe('no-close-on-outside-click', () => {
+        it('should close itself on outside click by default', () => {
+          backdrop.dispatchEvent(new CustomEvent('click', {bubbles: true, composed: true}));
+          expect(dialog.opened).to.eql(false);
+        });
+
+        it('should not close itself on outside click when no-close-on-outside-click is true', () => {
+          dialog.noCloseOnOutsideClick = true;
+          backdrop.dispatchEvent(new CustomEvent('click', {bubbles: true, composed: true}));
+          expect(dialog.opened).to.eql(true);
+        });
+      });
+    });
+
+    describe('vaadin-dialog no-template', () => {
+      var dialog;
+      beforeEach(() => dialog = fixture('notemplate'));
+
+      it('should not throw an exception if template is not present', () => {
+        const openDialog = () => dialog.opened = true;
+        expect(openDialog).to.not.throw();
+      });
+    });
+  </script>
+</body>
