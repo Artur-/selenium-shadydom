@@ -19,7 +19,6 @@ public class BasicIT {
     public void setup() {
         driver = new FirefoxDriver();
         driver.get("http://localhost:8080/testpage.html");
-        myElement = driver.findElementByTagName("my-element");
     }
 
     @After
@@ -31,7 +30,7 @@ public class BasicIT {
     public void accessOuterAsElement() {
         WebElement element = (WebElement) ((JavascriptExecutor) driver)
                 .executeScript(
-                        "return arguments[0].shadowRoot.querySelector('#outer')",
+                        "return document.getElementById('div');",
                         myElement);
         Assert.assertNotNull(element);
     }
@@ -40,7 +39,7 @@ public class BasicIT {
     public void accessOuterAsList() {
         List<WebElement> element = (List<WebElement>) ((JavascriptExecutor) driver)
                 .executeScript(
-                        "return [arguments[0].shadowRoot.querySelector('#outer')]",
+                        "return [document.getElementById('div')]",
                         myElement);
         Assert.assertNotNull(element);
     }
